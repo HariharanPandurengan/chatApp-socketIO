@@ -23,6 +23,18 @@ io.on('connect',(socket)=>{
         console.log(`${username} is connected with socket id ${socket.id}`);
     });
 
+    // Handle send request and notify the recipient
+    socket.on('send_request', (data) => {
+        const { recipient, currentUser } = data;
+        if (connectedUsers[recipient]) {
+            io.to(connectedUsers[recipient]).emit('notification', {
+                message: `you have a new friend request : ${currentUser}`,
+            });
+        } else {
+            // console.log('Recipient is not online.');
+        }
+    });
+
     // Handle request acceptance and notify the recipient
     socket.on('accept_request', (data) => {
         const { recipient, currentUser } = data;
@@ -31,7 +43,7 @@ io.on('connect',(socket)=>{
                 message: `Your request has been accepted by ${currentUser}`,
             });
         } else {
-            console.log('Recipient is not online.');
+            // console.log('Recipient is not online.');
         }
     });
 
@@ -40,25 +52,59 @@ io.on('connect',(socket)=>{
         const { recipient, currentUser } = data;
         if (connectedUsers[recipient]) {
             io.to(connectedUsers[recipient]).emit('notification', {
-                message: `You has been removed from friend list by ${currentUser}`,
+                message: `You are removed from friend list by ${currentUser}`,
             });
         } else {
-            console.log('Recipient is not online.');
+            // console.log('Recipient is not online.');
         }
     });
 
-    // Handle remove_friend and notify the recipient
+    // Handle chat and notify the recipient
     socket.on('chat', (data) => {
         const { recipient, currentUser, message } = data;
         if (connectedUsers[recipient]) {
             io.to(connectedUsers[recipient]).emit('notification', {
-                for: `new chat`,
+                for: "new chat",
                 from : currentUser,
                 message:message
             });
         } else {
-            console.log('Recipient is not online.');
+            // console.log('Recipient is not online.');
         }
+    });
+
+    // Handle group chat and notify the recipient
+    socket.on('group_chat', (data) => {
+        const { groupID, groupName , recipients , currentUser, message } = data;
+        recipients.forEach(item=>{
+            if (connectedUsers[item]) {
+                io.to(connectedUsers[item]).emit('notification', {
+                    for: "group chat",
+                    from : currentUser,
+                    message:message,
+                    groupName:groupName,
+                    groupID:groupID
+                });
+            } else {
+                // console.log('Recipient is not online.');
+            }
+        })
+    });
+
+    // Handle new group and notify the recipient
+    socket.on('new_group', (data) => {
+        const { recipients , currentUser, groupName } = data;
+        recipients.forEach(item=>{
+            if (connectedUsers[item]) {
+                io.to(connectedUsers[item]).emit('notification', {
+                    for: "new group",
+                    from : currentUser,
+                    groupName:groupName,
+                });
+            } else {
+                // console.log('Recipient is not online.');
+            }
+        })
     });
 
     socket.on('disconnect', () => {
