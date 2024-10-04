@@ -6,15 +6,11 @@ const socketio = require('socket.io')
 
 const io = socketio(expressServer,{
     cors: {
-        origin: 'http://localhost:3000', 
+        origin: 'https://chat-app-nextjs-8mxf2dzlx-hariharans-projects-a5d9ab0e.vercel.app/', 
         methods: ['GET', 'POST'],
         allowedHeaders: ['Content-Type'],
         credentials: true,
       },
-})
-
-app.get('/',(req,res)=>{
-    res.status(200).send('hi')
 })
 
 const connectedUsers = {};
