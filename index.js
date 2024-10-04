@@ -13,6 +13,10 @@ const io = socketio(expressServer,{
       },
 })
 
+app.get('/',(req,res)=>{
+    res.status(200).send('hi')
+})
+
 const connectedUsers = {};
 io.on('connect',(socket)=>{
     console.log(socket.id,'has joined our server')
