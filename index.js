@@ -6,7 +6,7 @@ const socketio = require('socket.io')
 
 const io = socketio(expressServer,{
     cors: {
-        origin: 'https://chat-app-nextjs-8mxf2dzlx-hariharans-projects-a5d9ab0e.vercel.app/', 
+        origin: 'https://chat-app-nextjs-flax.vercel.app/', 
         methods: ['GET', 'POST'],
         allowedHeaders: ['Content-Type'],
         credentials: true,
